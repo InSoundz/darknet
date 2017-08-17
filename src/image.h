@@ -11,6 +11,7 @@
 
 #ifndef __cplusplus
 #ifdef OPENCV
+int fill_image_from_stream_resize(CvCapture *cap, image im, int w, int h);
 int fill_image_from_stream(CvCapture *cap, image im);
 image ipl_to_image(IplImage* src);
 void ipl_into_image(IplImage* src, image im);

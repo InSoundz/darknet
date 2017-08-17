@@ -86,7 +86,7 @@ void *detect_in_thread(void *ptr)
 
 void *fetch_in_thread(void *ptr)
 {
-    int status = fill_image_from_stream(cap, buff[buff_index]);
+    int status = fill_image_from_stream_resize(cap, buff[buff_index], net.w, net.h);
     letterbox_image_into(buff[buff_index], net.w, net.h, buff_letter[buff_index]);
     if(status == 0) demo_done = 1;
     return 0;
@@ -179,7 +179,7 @@ void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const ch
     probs = (float **)calloc(l.w*l.h*l.n, sizeof(float *));
     for(j = 0; j < l.w*l.h*l.n; ++j) probs[j] = (float *)calloc(l.classes+1, sizeof(float));
 
-    buff[0] = get_image_from_stream(cap);
+    buff[0] = get_image_from_stream_resize(cap, net.w, net.h);
     buff[1] = copy_image(buff[0]);
     buff[2] = copy_image(buff[0]);
     buff_letter[0] = letterbox_image(buff[0], net.w, net.h);
@@ -189,12 +189,12 @@ void demo(char *cfgfile, char *weightfile, float thresh, int cam_index, const ch
 
     int count = 0;
     if(!prefix){
-        cvNamedWindow("Demo", CV_WINDOW_NORMAL); 
+        cvNamedWindow("Demo",CV_WINDOW_AUTOSIZE); 
         if(fullscreen){
             cvSetWindowProperty("Demo", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
         } else {
             cvMoveWindow("Demo", 0, 0);
-            cvResizeWindow("Demo", 1352, 1013);
+            //cvResizeWindow("Demo", 1352, 1013);
         }
     }
 

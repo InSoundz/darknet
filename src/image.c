@@ -571,11 +571,38 @@ image get_image_from_stream(CvCapture *cap)
     return im;
 }
 
+image get_image_from_stream_resize(CvCapture *cap, int w, int h)
+{
+    IplImage* src = cvQueryFrame(cap);
+    if (!src) return make_empty_image(0,0,0);
+
+    IplImage* new_img = cvCreateImage(cvSize(w, h), IPL_DEPTH_8U, 3);
+    cvResize(src, new_img, CV_INTER_LINEAR);
+    src = new_img;
+
+    image im = ipl_to_image(src);
+    rgbgr_image(im);
+
+    return im;
+}
+
 int fill_image_from_stream(CvCapture *cap, image im)
 {
     IplImage* src = cvQueryFrame(cap);
     if (!src) return 0;
     ipl_into_image(src, im);
+    rgbgr_image(im);
+    return 1;
+}
+
+int fill_image_from_stream_resize(CvCapture *cap, image im, int w, int h)
+{
+    IplImage* src = cvQueryFrame(cap);
+    if (!src) return 0;
+    IplImage* new_img = cvCreateImage(cvSize(w, h), IPL_DEPTH_8U, 3);
+    cvResize(src, new_img, CV_INTER_LINEAR);
+    src = new_img;
+    ipl_into_image(new_img, im);
     rgbgr_image(im);
     return 1;
 }
